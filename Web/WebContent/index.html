@@ -16,13 +16,14 @@ function showName() {
              document.getElementById("resp").innerHTML = this.responseText;
             //alert("Hei"+this.responseText); 
         };
+         
         xmlhttp.open("GET","Start?nume=" +temp, true);
         xmlhttp.send();}
 </script>
 </head>
 <body>
 <input id="nume">
-<button onClick="showName();">Apasa</button>
+<button onClick="showName();">Apasa ceva</button>
 <p id="resp"></p>
 </body>
 </html>
