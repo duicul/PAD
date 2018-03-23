@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Start</title>
+<script type="text/javascript">
+function show(){
+	document.getElementById("resp").innerHTML=document.getElementById("nume").value;	
+}
+
+function showName() {
+	var xmlhttp = new XMLHttpRequest();
+	var temp=document.getElementById("nume").value;
+	xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) 
+             document.getElementById("resp").innerHTML = this.responseText;
+            //alert("Hei"+this.responseText); 
+        };
+        xmlhttp.open("GET","Start?nume=" +temp, true);
+        xmlhttp.send();}
+</script>
+</head>
+<body>
+<input id="nume">
+<button onClick="showName();">Apasa</button>
+<p id="resp"></p>
+</body>
+</html>
