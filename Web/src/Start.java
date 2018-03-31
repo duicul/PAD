@@ -9,25 +9,19 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import classes.*;
+import interfaces.*;
 import java.rmi.registry.*;
-/**
- * Servlet implementation class Start
- */
+
+
 @WebServlet(description = "ceva", urlPatterns = { "/Start" })
 public class Start extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public Start() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+        super();}
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String docType ="<!doctype html public>\n";
@@ -35,37 +29,38 @@ public class Start extends HttpServlet {
 		/*if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }*/
-        try {
-            String name = "Compute";
-            Registry registry = LocateRegistry.getRegistry(Hostname.hostname);
-            Compute comp = (Compute) registry.lookup(name);
-            int t = comp.execute(20);
-            //System.out.println(t);
-            response.getWriter().println("Value: "+t+"<br>");
-        } catch (Exception e) {
-            System.err.println("ComputePi exception:");
-            e.printStackTrace();
+		String resp="";
+		for(Server s:Connection.getServ_list())
+        {try {String name1 = "DB-"+s.getDbase();
+            String name2 = "Farmacie-"+s.getDbase();
+            String name3 = "Stoc-"+s.getDbase();
+            String name4 = "Produs-"+s.getDbase();
+            Registry registry = LocateRegistry.getRegistry(s.getHost());
+            DBManageinter db = (DBManageinter) registry.lookup(name1);
+            Farmacieinter farm = (Farmacieinter) registry.lookup(name2);
+            Stocinter stoc = (Stocinter) registry.lookup(name3);
+            Produsinter prod = (Produsinter) registry.lookup(name4);
+            List<Farmacie> fl=db.getFarmacii();
+            if(fl!=null)
+            for(Farmacie f:fl)
+            {resp+=f.getNume()+" "+f.getAdresa()+" "+f.getOras()+" "+f.getProgram()+/*" "+f.getDBase()+*/"\n";
+            List<Produs> pl=farm.getProductsFarmacie(f);
+            if(pl!=null);
+            {for(Produs p:pl)
+            {resp+=p.getNume()+" "+p.getClasa()+"\n";
+            Stoc st=prod.getStoc(p.getID(), f.getID());
+            if(st!=null)
+            resp+=st.getCantitate()+" "+st.getPret()+"\n";
+            }}	
+            }
+            } catch (Exception e) {
+                System.err.println("ComputeEngine exception:");
+                e.printStackTrace();
+            }
+        resp+="\n";
         }
-		/*List<Student>l=new ArrayList<Student>();
-        System.out.println(nume);
-        try {  
-            // Getting the registry 
-            Registry registry = LocateRegistry.getRegistry(null); 
-       
-            // Looking up the registry for the remote object 
-            StudentData stub = (StudentData) registry.lookup("Hello"); 
-       
-            // Calling the remote method using the obtained object 
-            l=stub.getStudents(); 
-            
-            // System.out.println("Remote method invoked"); 
-         } catch (Exception e) {
-            System.err.println("Client exception: " + e.toString()); 
-            e.printStackTrace(); 
-         } */
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-		response.getWriter().println("<div>Ceau acum "+nume+"</div>");
-		//response.getWriter().println(l.get(0).nume);
+		response.getWriter().append("Served at: ").append(request.getContextPath()).append("\n");
+		response.getWriter().println(resp);
 	}
 
 	/**
